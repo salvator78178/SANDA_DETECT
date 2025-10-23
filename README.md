@@ -9,7 +9,7 @@ Prérequis
 1.	Télécharger les fichiers
 bash
 # Si vous utilisez Git
-git clone https://github.com/votre-username/SANDA_DETECT.git
+git clone https://github.com/salvator78178/SANDA_DETECT.git
 cd SANDA_DETECT
 
 # Sinon, téléchargez et décompressez les fichiers dans un dossier SANDA_DETECT
