@@ -1,0 +1,467 @@
+{% extends "base.html" %}
+
+{% block title %}Agent Assurance - SANDA_DETECT{% endblock %}
+
+{% block content %}
+    <div class="agent-container">
+        <h2>📑 Espace Agent Assurance</h2>
+        <p class="welcome-text">Bienvenue dans l'espace Agent. Ici, vous pouvez enregistrer, consulter et analyser les déclarations de sinistres.</p>
+
+        <!-- Statistiques réelles -->
+        <div class="quick-stats">
+            <h3>📈 Aperçu en temps réel</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ dossiers_attente|length }}</div>
+                    <div class="stat-label">Dossiers en attente</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ alertes_fraude|length }}</div>
+                    <div class="stat-label">Alertes fraude</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ dossiers_attente|length + alertes_fraude|length }}</div>
+                    <div class="stat-label">Total à traiter</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <h3>🚀 Actions disponibles :</h3>
+            <div class="actions-grid">
+                <div class="action-card">
+                    <a href="{{ url_for('client') }}" class="action-link">
+                        <span class="action-icon">📝</span>
+                        <span class="action-title">Enregistrer une déclaration de sinistre</span>
+                        <span class="action-desc">Saisir une nouvelle déclaration de sinistre client</span>
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <a href="#" class="action-link">
+                        <span class="action-icon">🔎</span>
+                        <span class="action-title">Consulter l'historique des sinistres</span>
+                        <span class="action-desc">Accéder à l'historique complet des déclarations</span>
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <a href="#" class="action-link">
+                        <span class="action-icon">⚖</span>
+                        <span class="action-title">Vérifier un dossier suspect avec l'IA</span>
+                        <span class="action-desc">Analyser un dossier avec le modèle de détection de fraude</span>
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <a href="#" class="action-link">
+                        <span class="action-icon">📤</span>
+                        <span class="action-title">Générer un rapport de suivi</span>
+                        <span class="action-desc">Créer des rapports détaillés pour les dossiers</span>
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <a href="{{ url_for('analyste') }}" class="action-link">
+                        <span class="action-icon">📊</span>
+                        <span class="action-title">Tableau de bord analytique</span>
+                        <span class="action-desc">Visualiser les statistiques et tendances</span>
+                    </a>
+                </div>
+
+                <div class="action-card">
+                    <a href="#" class="action-link">
+                        <span class="action-icon">🔔</span>
+                        <span class="action-title">Alertes et notifications</span>
+                        <span class="action-desc">Consulter les alertes de fraude en temps réel</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des dossiers en attente -->
+        {% if dossiers_attente %}
+        <div class="pending-cases">
+            <h3>⏳ Dossiers en attente de traitement</h3>
+            <div class="cases-list">
+                {% for dossier in dossiers_attente %}
+                <div class="case-item">
+                    <div class="case-header">
+                        <span class="case-id">#{{ dossier.id }} - {{ dossier.nom_complet }}</span>
+                        <span class="case-status {{ dossier.statut }}">
+                            {% if dossier.statut == 'soumis' %}Nouveau
+                            {% elif dossier.statut == 'en_cours' %}En cours
+                            {% else %}{{ dossier.statut }}{% endif %}
+                        </span>
+                    </div>
+                    <div class="case-info">
+                        <strong>Type:</strong> {{ dossier.type_sinistre|title }}<br>
+                        <strong>Date sinistre:</strong> {{ dossier.date_sinistre }}<br>
+                        <strong>Déclaré le:</strong> {{ dossier.date_creation }}
+                    </div>
+                    <div class="case-actions">
+                        <button class="btn btn-primary">Traiter</button>
+                        <button class="btn btn-secondary">Détails</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Alertes fraude -->
+        {% if alertes_fraude %}
+        <div class="fraud-alerts">
+            <h3>🚨 Alertes de fraude détectées</h3>
+            <div class="alerts-list">
+                {% for alerte in alertes_fraude %}
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <span class="alert-id">#{{ alerte.id }} - {{ alerte.nom_complet }}</span>
+                        <span class="alert-priority">Haute priorité</span>
+                    </div>
+                    <div class="alert-info">
+                        <strong>Raison:</strong> Suspicion de fraude détectée par l'IA<br>
+                        <strong>Score de risque:</strong> Élevé<br>
+                        <strong>Détails:</strong> {{ alerte.description[:100] }}...
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn btn-danger">Investiger</button>
+                        <button class="btn btn-warning">Analyser</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="back-section">
+            <a href="{{ url_for('home') }}" class="back-link">⬅ Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <style>
+        .agent-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-text {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .quick-stats {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .quick-stats h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .actions-section h3 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 0;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #007bff;
+        }
+
+        .action-link {
+            display: block;
+            padding: 30px 25px;
+            text-decoration: none;
+            color: inherit;
+            height: 100%;
+        }
+
+        .action-icon {
+            font-size: 2.5em;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .action-title {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .action-desc {
+            display: block;
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .pending-cases, .fraud-alerts {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .pending-cases h3, .fraud-alerts h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .cases-list, .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .case-item, .alert-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-item {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .case-header, .alert-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .case-id, .alert-id {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .case-status, .alert-priority {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .case-status.soumis {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .case-status.en_cours {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .alert-priority {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .case-info, .alert-info {
+            flex: 1;
+            margin: 0 20px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .case-actions, .alert-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .back-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #545b62;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .actions-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .action-card {
+                margin: 0 10px;
+            }
+
+            .action-link {
+                padding: 25px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .case-item, .alert-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .case-info, .alert-info {
+                margin: 0;
+            }
+
+            .case-actions, .alert-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .agent-container {
+                padding: 15px;
+            }
+
+            .actions-grid {
+                gap: 15px;
+            }
+
+            .action-icon {
+                font-size: 2em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-item {
+                padding: 15px;
+            }
+        }
+    </style>
+{% endblock %}

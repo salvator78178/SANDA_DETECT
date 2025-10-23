@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SANDA_DETECT - Detection de Fraude{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            position: relative;
+            font-weight: 300;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        nav a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            margin: 2rem 0;
+        }
+        
+        main {
+            padding: 2rem;
+            min-height: calc(100vh - 200px);
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .error-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        
+        .error-container h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #e74c3c;
+        }
+        
+        .error-container p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #666;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 1rem 2rem;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .back-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem 1rem;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            nav {
+                gap: 1rem;
+            }
+            
+            nav a {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav a {
+                width: 200px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 SANDA_DETECT</h1>
+            <p>Votre système intelligent de détection de fraude en assurance automobile</p>
+            <nav>
+                <a href="{{ url_for('home') }}">🏠 Accueil</a>
+                <a href="{{ url_for('admin') }}">👨‍💼 Administration</a>
+                <a href="{{ url_for('analyste') }}">🤖 Analyste IA</a>
+                <a href="{{ url_for('agent') }}">📑 Agent Assurance</a>
+                <a href="{{ url_for('client') }}">🙋‍♂️ Espace Client</a>
+            </nav>
+            <hr>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            <p>&copy; 2024 SANDA_DETECT - Système Avancé de Détection de Fraude | Développé pour le mémoire de fin d'études</p>
+        </footer>
+    </div>
+</body>
+</html>

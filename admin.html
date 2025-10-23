@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}Administration - SANDA_DETECT{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h2>👨‍💼 Tableau de Bord Administrateur</h2>
+    <p class="welcome-text">Bienvenue dans l'espace d'administration. Ici, vous pouvez gérer les utilisateurs et superviser le système.</p>
+
+    <!-- Statistiques -->
+    {% if stats %}
+    <div class="stats-section">
+        <h3>📊 Statistiques du Système</h3>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.total_declarations }}</div>
+                <div class="stat-label">Déclarations totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.declarations_traitees }}</div>
+                <div class="stat-label">Déclarations traitées</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ stats.alertes_fraude }}</div>
+                <div class="stat-label">Alertes fraude</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="actions-section">
+        <h3>🚀 Actions disponibles :</h3>
+        <div class="actions-grid">
+            <div class="action-card">
+                <a href="#" class="action-link">
+                    <span class="action-icon">➕</span>
+                    <span class="action-title">Ajouter un utilisateur</span>
+                    <span class="action-desc">Créer un nouveau compte utilisateur</span>
+                </a>
+            </div>
+
+            <div class="action-card">
+                <a href="#" class="action-link">
+                    <span class="action-icon">🗑</span>
+                    <span class="action-title">Supprimer un utilisateur</span>
+                    <span class="action-desc">Gérer les comptes utilisateurs</span>
+                </a>
+            </div>
+
+            <div class="action-card">
+                <a href="#" class="action-link">
+                    <span class="action-icon">👁</span>
+                    <span class="action-title">Suivi de l'activité</span>
+                    <span class="action-desc">Superviser les activités du système</span>
+                </a>
+            </div>
+
+            <div class="action-card">
+                <a href="#" class="action-link">
+                    <span class="action-icon">⚙</span>
+                    <span class="action-title">Paramètres du système</span>
+                    <span class="action-desc">Configurer les paramètres globaux</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-section">
+        <a href="{{ url_for('home') }}" class="back-link">⬅ Retour à l'accueil</a>
+    </div>
+</div>
+
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .welcome-text {
+        color: #555;
+        font-size: 1.1em;
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    .stats-section {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .stats-section h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9em;
+        opacity: 0.9;
+    }
+
+    .actions-section h3 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 1.4em;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .action-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 0;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-color: #007bff;
+    }
+
+    .action-link {
+        display: block;
+        padding: 30px 20px;
+        text-decoration: none;
+        color: inherit;
+        height: 100%;
+    }
+
+    .action-icon {
+        font-size: 2.5em;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .action-title {
+        display: block;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .action-desc {
+        display: block;
+        font-size: 0.9em;
+        color: #666;
+        line-height: 1.4;
+    }
+
+    .back-section {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .back-link {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        background: #545b62;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 15px;
+        }
+
+        .actions-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .action-link {
+            padding: 25px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-icon {
+            font-size: 2em;
+        }
+    }
+</style>
+{% endblock %}

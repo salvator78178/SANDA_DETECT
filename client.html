@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block title %}Espace Client - SANDA_DETECT{% endblock %}
+
+{% block content %}
+    <div class="client-container">
+        <h2>🙋‍♂️ Espace Client</h2>
+        <p class="welcome-text">Bienvenue dans votre espace personnel. Ici, vous pouvez déclarer et suivre vos sinistres.</p>
+
+        <!-- Flash messages pour confirmation -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                  {% if category == 'success' %}
+                    <span class="flash-icon">✅</span>
+                  {% elif category == 'warning' %}
+                    <span class="flash-icon">⚠️</span>
+                  {% else %}
+                    <span class="flash-icon">❌</span>
+                  {% endif %}
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="client-content">
+            <!-- Formulaire de déclaration de sinistre -->
+            <div class="form-section">
+                <h3>📝 Déclarer un nouveau sinistre</h3>
+                <form method="POST" action="{{ url_for('client') }}" class="claim-form">
+                    <div class="form-group">
+                        <label for="nom" class="form-label">Nom complet : *</label>
+                        <input type="text" id="nom" name="nom" class="form-input" required placeholder="Votre nom complet">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="police" class="form-label">Numéro de police : *</label>
+                        <input type="text" id="police" name="police" class="form-input" required placeholder="Votre numéro de police d'assurance">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Adresse email : *</label>
+                        <input type="email" id="email" name="email" class="form-input" required placeholder="votre@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telephone" class="form-label">Téléphone : *</label>
+                        <input type="tel" id="telephone" name="telephone" class="form-input" required placeholder="Votre numéro de téléphone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date_sinistre" class="form-label">Date du sinistre : *</label>
+                        <input type="date" id="date_sinistre" name="date_sinistre" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type_sinistre" class="form-label">Type de sinistre : *</label>
+                        <select id="type_sinistre" name="type_sinistre" class="form-input" required>
+                            <option value="">Sélectionnez le type...</option>
+                            <option value="accident">Accident automobile</option>
+                            <option value="vol">Vol</option>
+                            <option value="incendie">Incendie</option>
+                            <option value="bris_glace">Bris de glace</option>
+                            <option value="degats_eaux">Dégâts des eaux</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">Description détaillée du sinistre : *</label>
+                        <textarea id="description" name="description" class="form-textarea" rows="5" required placeholder="Décrivez en détail les circonstances du sinistre..."></textarea>
+                        <small class="form-help">Décrivez précisément ce qui s'est passé, les personnes impliquées, les dégâts constatés, etc.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label agreement">
+                            <input type="checkbox" name="confirmation" required>
+                            <span class="checkmark"></span>
+                            Je certifie que les informations fournies sont exactes et complètes
+                        </label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-icon">📨</span>
+                        Envoyer ma déclaration
+                    </button>
+                </form>
+            </div>
+
+            <!-- Section suivi des sinistres -->
+            <div class="tracking-section">
+                <h3>📊 Mes déclarations récentes</h3>
+                <div class="claims-list">
+                    {% if declarations %}
+                        {% for declaration in declarations %}
+                        <div class="claim-item">
+                            <div class="claim-header">
+                                <span class="claim-id">#{{ declaration.id }} - {{ declaration.nom_complet }}</span>
+                                <span class="claim-status {{ declaration.statut }}">
+                                    {% if declaration.statut == 'soumis' %}Déposé
+                                    {% elif declaration.statut == 'en_cours' %}En cours
+                                    {% elif declaration.statut == 'alerte_fraude' %}⚠️ Analyse
+                                    {% elif declaration.statut == 'traite' %}Traité
+                                    {% else %}{{ declaration.statut }}{% endif %}
+                                </span>
+                            </div>
+                            <div class="claim-info">
+                                <strong>Type:</strong> {{ declaration.type_sinistre|title }}<br>
+                                <strong>Date sinistre:</strong> {{ declaration.date_sinistre }}<br>
+                                <strong>Déclaré le:</strong> {{ declaration.date_creation }}<br>
+                                <strong>Statut:</strong> 
+                                {% if declaration.statut == 'alerte_fraude' %}
+                                    <span style="color: #dc3545; font-weight: bold;">En analyse approfondie</span>
+                                {% else %}
+                                    En traitement
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-claims">
+                            <span class="no-claims-icon">📝</span>
+                            <p>Vous n'avez aucune déclaration pour le moment.</p>
+                            <p>Utilisez le formulaire pour déclarer un sinistre.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Exemples de statuts (à supprimer quand vous avez des vraies données) -->
+                <div class="sample-claims" style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4>💡 Exemples de suivi de sinistre</h4>
+                    <div class="claims-list">
+                        <div class="claim-item">
+                            <div class="claim-header">
+                                <span class="claim-id">#CL-2024-001</span>
+                                <span class="claim-status submitted">Déposé</span>
+                            </div>
+                            <div class="claim-info">
+                                <strong>Type:</strong> Accident automobile<br>
+                                <strong>Date:</strong> 10/01/2024<br>
+                                <strong>Statut:</strong> En traitement
+                            </div>
+                        </div>
+
+                        <div class="claim-item">
+                            <div class="claim-header">
+                                <span class="claim-id">#CL-2024-002</span>
+                                <span class="claim-status in-progress">En cours</span>
+                            </div>
+                            <div class="claim-info">
+                                <strong>Type:</strong> Bris de glace<br>
+                                <strong>Date:</strong> 05/01/2024<br>
+                                <strong>Statut:</strong> Expertise en cours
+                            </div>
+                        </div>
+
+                        <div class="claim-item">
+                            <div class="claim-header">
+                                <span class="claim-id">#CL-2023-156</span>
+                                <span class="claim-status completed">Traité</span>
+                            </div>
+                            <div class="claim-info">
+                                <strong>Type:</strong> Vol<br>
+                                <strong>Date:</strong> 15/12/2023<br>
+                                <strong>Statut:</strong> Indemnisation terminée
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="back-section">
+            <a href="{{ url_for('home') }}" class="back-link">⬅ Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <style>
+        .client-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-text {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .flash-messages {
+            margin: 20px 0;
+        }
+
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flash-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .flash-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .flash-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .flash-icon {
+            font-size: 1.2em;
+        }
+
+        .client-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .form-section, .tracking-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-section h3, .tracking-section h3 {
+            color: #333;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 5px;
+            color: #6c757d;
+            font-size: 0.85em;
+        }
+
+        .agreement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .agreement input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+
+        .claims-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .claim-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .claim-id {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .claim-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+
+        .claim-status.soumis, .claim-status.submitted {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .claim-status.en_cours, .claim-status.in-progress {
+            background: #cce7ff;
+            color: #004085;
+        }
+
+        .claim-status.alerte_fraude {
+            background: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .claim-status.traite, .claim-status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .claim-info {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .no-claims {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .no-claims-icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .sample-claims {
+            border: 2px dashed #dee2e6;
+        }
+
+        .sample-claims h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .back-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #545b62;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .client-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .form-section, .tracking-section {
+                padding: 20px;
+            }
+
+            .claim-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .client-container {
+                padding: 15px;
+            }
+
+            .form-section, .tracking-section {
+                padding: 15px;
+            }
+
+            .submit-btn {
+                padding: 12px;
+                font-size: 1em;
+            }
+        }
+    </style>
+{% endblock %}

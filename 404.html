@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Page non trouvée - SANDA_DETECT{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content">
+        <div class="error-icon">❌</div>
+        <h2>Page non trouvée</h2>
+        <p>La page que vous recherchez n'existe pas ou a été déplacée.</p>
+        <p class="error-details">Code d'erreur : 404 - Page Not Found</p>
+        <a href="{{ url_for('home') }}" class="back-link">🏠 Retour à l'accueil</a>
+    </div>
+</div>
+
+<style>
+    .error-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 20px;
+    }
+
+    .error-content {
+        text-align: center;
+        max-width: 500px;
+    }
+
+    .error-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+    }
+
+    .error-content h2 {
+        color: #dc3545;
+        margin-bottom: 15px;
+        font-size: 2em;
+    }
+
+    .error-content p {
+        color: #666;
+        margin-bottom: 10px;
+        line-height: 1.6;
+    }
+
+    .error-details {
+        font-size: 0.9em;
+        color: #999;
+        font-style: italic;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 30px;
+        background: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        background: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
